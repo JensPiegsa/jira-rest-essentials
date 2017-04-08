@@ -1,0 +1,28 @@
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="plugin-icon">images/pluginIcon.png</param>
+        <param name="plugin-logo">images/pluginLogo.png</param>
+    </plugin-info>
+
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="i18n" location="jira-rest-essentials"/>
+    
+    <!-- add our web resources -->
+    <web-resource key="jira-rest-essentials-resources" name="jira-rest-essentials Web Resources">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        
+        <resource type="download" name="jira-rest-essentials.css" location="/css/jira-rest-essentials.css"/>
+        <resource type="download" name="jira-rest-essentials.js" location="/js/jira-rest-essentials.js"/>
+        <resource type="download" name="images/" location="/images"/>
+
+        <context>jira-rest-essentials</context>
+    </web-resource>
+
+	<!-- https://developer.atlassian.com/docs/atlassian-platform-common-components/rest-api-development/rest-plugin-module -->
+	<rest name="JIRA REST Essentials" i18n-name-key="rest-resource.name" key="rest-resource" path="/essentials" version="1.0">
+		<description key="rest-resource.description">Additional REST Resources exposing features of JIRAs Java API not present in its REST API.</description>
+	</rest>    
+</atlassian-plugin>

@@ -1,0 +1,262 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>jira-rest-essentials</groupId>
+	<artifactId>jira-rest-essentials</artifactId>
+	<version>1.0.13</version>
+
+	<organization>
+		<name>Jens Piegsa</name>
+		<url>jens-piegsa.com</url>
+	</organization>
+
+	<name>jira-rest-essentials</name>
+	<description>This is the jira-rest-essentials:jira-rest-essentials plugin for Atlassian JIRA.</description>
+	<packaging>atlassian-plugin</packaging>
+	<!-- <packaging>jar</packaging> -->
+
+	<properties>
+		<java.min.version>1.8</java.min.version>
+		<maven.compiler.source>${java.min.version}</maven.compiler.source>
+		<maven.compiler.target>${java.min.version}</maven.compiler.target>
+		<maven.compiler.testSource>${java.min.version}</maven.compiler.testSource>
+		<maven.compiler.testTarget>${java.min.version}</maven.compiler.testTarget>
+		<jira.version>7.2.2</jira.version>
+		<amps.version>6.2.11</amps.version>
+		<plugin.testrunner.version>1.2.3</plugin.testrunner.version>
+		<atlassian.spring.scanner.version>1.2.13</atlassian.spring.scanner.version>
+		<!-- This key is used to keep the consistency between the key in atlassian-plugin.xml 
+			and the key to generate bundle. -->
+		<atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
+		<!-- TestKit version 6.x for JIRA 6.x -->
+		<testkit.version>6.3.11</testkit.version>
+		<downloadSources>true</downloadSources>
+		<downloadJavadocs>true</downloadJavadocs>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>atlassian-public</id>
+			<url>https://maven.atlassian.com/repository/public</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+		</repository>
+		<!-- <repository> <id>atlassian-plugin-sdk</id> <url>file://${env.ATLAS_HOME}/repository</url> 
+			<snapshots> <enabled>true</enabled> </snapshots> <releases> <enabled>true</enabled> 
+			<checksumPolicy>warn</checksumPolicy> </releases> </repository> -->
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>atlassian-public</id>
+			<url>https://maven.atlassian.com/repository/public</url>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+		</pluginRepository>
+		<!-- <pluginRepository> <id>atlassian-plugin-sdk</id> <url>file://${env.ATLAS_HOME}/repository</url> 
+			<releases> <enabled>true</enabled> <checksumPolicy>warn</checksumPolicy> 
+			</releases> <snapshots> <enabled>true</enabled> </snapshots> </pluginRepository> -->
+	</pluginRepositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.atlassian.jira</groupId>
+			<artifactId>jira-api</artifactId>
+			<version>${jira.version}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>jta</groupId>
+					<artifactId>jta</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- Add dependency on jira-core if you want access to JIRA implementation 
+			classes as well as the sanctioned API. -->
+		<!-- This is not normally recommended, but may be required eg when migrating 
+			a plugin originally developed against JIRA 4.x -->
+		<dependency>
+			<groupId>com.atlassian.jira</groupId>
+			<artifactId>jira-core</artifactId>
+			<version>${jira.version}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>jta</groupId>
+					<artifactId>jta</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>jndi</groupId>
+					<artifactId>jndi</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.atlassian.plugin</groupId>
+			<artifactId>atlassian-spring-scanner-annotation</artifactId>
+			<version>${atlassian.spring.scanner.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.atlassian.plugin</groupId>
+			<artifactId>atlassian-spring-scanner-runtime</artifactId>
+			<version>${atlassian.spring.scanner.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- WIRED TEST RUNNER DEPENDENCIES -->
+		<dependency>
+			<groupId>com.atlassian.plugins</groupId>
+			<artifactId>atlassian-plugins-osgi-testrunner</artifactId>
+			<version>${plugin.testrunner.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>jsr311-api</artifactId>
+			<version>1.1.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.2-atlassian-1</version>
+		</dependency>
+
+		<!-- Uncomment to use TestKit in your project. Details at https://bitbucket.org/atlassian/jira-testkit -->
+		<!-- You can read more about TestKit at https://developer.atlassian.com/display/JIRADEV/Plugin+Tutorial+-+Smarter+integration+testing+with+TestKit -->
+		<!-- <dependency> <groupId>com.atlassian.jira.tests</groupId> <artifactId>jira-testkit-client</artifactId> 
+			<version>${testkit.version}</version> <scope>test</scope> </dependency> -->
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.atlassian.maven.plugins</groupId>
+				<artifactId>maven-jira-plugin</artifactId>
+				<version>${amps.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<productVersion>${jira.version}</productVersion>
+					<productDataVersion>${jira.version}</productDataVersion>
+					<!-- Uncomment to install TestKit backdoor in JIRA. -->
+					<!-- <pluginArtifacts> <pluginArtifact> <groupId>com.atlassian.jira.tests</groupId> 
+						<artifactId>jira-testkit-plugin</artifactId> <version>${testkit.version}</version> 
+						</pluginArtifact> </pluginArtifacts> -->
+					<enableQuickReload>true</enableQuickReload>
+					<enableFastdev>false</enableFastdev>
+
+					<!-- See here for an explanation of default instructions: -->
+					<!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
+					<instructions>
+						<Atlassian-Plugin-Key>${atlassian.plugin.key}</Atlassian-Plugin-Key>
+
+						<!-- Add package to export here -->
+						<Export-Package>
+							jira_rest_essentials.api,
+						</Export-Package>
+
+						<!-- Add package import here -->
+						<Import-Package>
+							org.springframework.osgi.*;resolution:="optional",
+							org.eclipse.gemini.blueprint.*;resolution:="optional",
+							*
+						</Import-Package>
+
+						<!-- Ensure plugin is spring powered -->
+						<Spring-Context>*</Spring-Context>
+					</instructions>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.atlassian.plugin</groupId>
+				<artifactId>atlassian-spring-scanner-maven-plugin</artifactId>
+				<version>${atlassian.spring.scanner.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>atlassian-spring-scanner</goal>
+						</goals>
+						<phase>process-classes</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<scannedDependencies>
+						<dependency>
+							<groupId>com.atlassian.plugin</groupId>
+							<artifactId>atlassian-spring-scanner-external-jar</artifactId>
+						</dependency>
+					</scannedDependencies>
+					<verbose>false</verbose>
+				</configuration>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											com.atlassian.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-jira-plugin
+										</artifactId>
+										<versionRange>
+											[6.2.11,)
+										</versionRange>
+										<goals>
+											<goal>
+												compress-resources
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
