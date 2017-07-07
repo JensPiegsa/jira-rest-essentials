@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>jira-rest-essentials</groupId>
 	<artifactId>jira-rest-essentials</artifactId>
-	<version>1.0.13</version>
+	<version>1.0.15</version>
 
 	<organization>
 		<name>Jens Piegsa</name>
@@ -49,9 +49,6 @@
 				<checksumPolicy>warn</checksumPolicy>
 			</releases>
 		</repository>
-		<!-- <repository> <id>atlassian-plugin-sdk</id> <url>file://${env.ATLAS_HOME}/repository</url> 
-			<snapshots> <enabled>true</enabled> </snapshots> <releases> <enabled>true</enabled> 
-			<checksumPolicy>warn</checksumPolicy> </releases> </repository> -->
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -66,9 +63,6 @@
 				<checksumPolicy>warn</checksumPolicy>
 			</snapshots>
 		</pluginRepository>
-		<!-- <pluginRepository> <id>atlassian-plugin-sdk</id> <url>file://${env.ATLAS_HOME}/repository</url> 
-			<releases> <enabled>true</enabled> <checksumPolicy>warn</checksumPolicy> 
-			</releases> <snapshots> <enabled>true</enabled> </snapshots> </pluginRepository> -->
 	</pluginRepositories>
 
 	<dependencies>
@@ -84,10 +78,8 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- Add dependency on jira-core if you want access to JIRA implementation 
-			classes as well as the sanctioned API. -->
-		<!-- This is not normally recommended, but may be required eg when migrating 
-			a plugin originally developed against JIRA 4.x -->
+		<!-- Add dependency on jira-core if you want access to JIRA implementation classes as well as the sanctioned API. -->
+		<!-- This is not normally recommended, but may be required eg when migrating a plugin originally developed against JIRA 4.x -->
 		<dependency>
 			<groupId>com.atlassian.jira</groupId>
 			<artifactId>jira-core</artifactId>

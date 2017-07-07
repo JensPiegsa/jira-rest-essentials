@@ -1,5 +1,6 @@
 package jira_rest_essentials;
 
+import static java.util.Collections.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.util.Collection;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -22,6 +24,7 @@ import org.apache.log4j.Logger;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.fields.screen.FieldScreen;
+import com.atlassian.jira.issue.fields.screen.FieldScreenImpl;
 import com.atlassian.jira.issue.fields.screen.FieldScreenManager;
 import com.atlassian.jira.issue.fields.screen.FieldScreenScheme;
 import com.atlassian.jira.issue.fields.screen.FieldScreenSchemeItem;
@@ -40,6 +43,40 @@ import com.atlassian.jira.project.ProjectManager;
 public class ScreenResource {
 
 	private static final Logger log = LogManager.getLogger("atlassian.plugin");
+
+	@PUT
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response createOrUpdateScreen(@QueryParam("name") final String name, @QueryParam("description") final String description) {
+
+		if (isBlank(name)) {
+			return Response.status(Status.BAD_REQUEST).entity(singletonMap("message", "name param must not be empty.")).build();
+		}
+
+		if (isBlank(description)) {
+			return Response.status(Status.BAD_REQUEST).entity(singletonMap("message", "description param must not be empty.")).build();
+		}
+
+		final FieldScreen existingScreen = findScreenByName(name);
+		if (existingScreen == null) {
+			final FieldScreen screen = makeScreen(name, description);
+
+			try {
+				fieldScreens().createFieldScreen(screen);
+				return Response.ok(singletonMap("id", screen.getId())).build();
+			} catch (final RuntimeException e) {
+				return Response.status(Status.INTERNAL_SERVER_ERROR).entity(singletonMap("message", e.getMessage())).build();
+			}
+		} else {
+			return Response.ok(singletonMap("id", existingScreen.getId())).build();
+		}
+	}
+
+	private FieldScreen makeScreen(final String name, final String description) {
+		final FieldScreen screen = new FieldScreenImpl(fieldScreens());
+		screen.setName(name);
+		screen.setDescription(description);
+		return screen;
+	}
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
