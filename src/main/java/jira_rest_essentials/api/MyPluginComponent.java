@@ -1,6 +1,6 @@
 package jira_rest_essentials.api;
 
-public interface MyPluginComponent
-{
-    String getName();
+public interface MyPluginComponent {
+
+	String getName();
 }

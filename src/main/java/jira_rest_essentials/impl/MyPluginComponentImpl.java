@@ -8,26 +8,23 @@ import jira_rest_essentials.api.MyPluginComponent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-@ExportAsService ({MyPluginComponent.class})
-@Named ("myPluginComponent")
-public class MyPluginComponentImpl implements MyPluginComponent
-{
-    @ComponentImport
-    private final ApplicationProperties applicationProperties;
+@ExportAsService({MyPluginComponent.class})
+@Named("myPluginComponent")
+public class MyPluginComponentImpl implements MyPluginComponent {
 
-    @Inject
-    public MyPluginComponentImpl(final ApplicationProperties applicationProperties)
-    {
-        this.applicationProperties = applicationProperties;
-    }
+	@ComponentImport
+	private final ApplicationProperties applicationProperties;
 
-    public String getName()
-    {
-        if(null != applicationProperties)
-        {
-            return "myComponent:" + applicationProperties.getDisplayName();
-        }
-        
-        return "myComponent";
-    }
+	@Inject
+	public MyPluginComponentImpl(final ApplicationProperties applicationProperties) {
+		this.applicationProperties = applicationProperties;
+	}
+
+	public String getName() {
+		if (null != applicationProperties) {
+			return "myComponent:" + applicationProperties.getDisplayName();
+		}
+
+		return "myComponent";
+	}
 }

@@ -4,27 +4,50 @@ This JIRA plugin exists to close some gaps of the [JIRA REST API](https://docs.a
 
 ### FieldScreen
 
-#### `GET /rest/essentials/1.0/screen`
+#### `GET https:/example.com/jira/rest/essentials/1.0/screen`
 
 * lists all screens by id and name
 
-#### `GET /rest/essentials/1.0/screen?projectKey={projectKey}`
+#### `GET https:/example.com/jira/rest/essentials/1.0/screen?projectKey={projectKey}`
 
 * lists all screens associated with a given project
 
-#### `GET /rest/essentials/1.0/screen?name={screenName}`
+#### `GET https:/example.com/jira/rest/essentials/1.0/screen?name={screenName}`
 
 * returns the id for a screen with the given name
 
 ### CustomField
 
-#### `GET /rest/essentials/1.0/customfield/description`
+#### `GET https:/example.com/jira/rest/essentials/1.0/customfield/description`
 
 * lists all custom field descriptions by field (with prefix `custom_*`)
 
-#### `GET /rest/essentials/1.0/customfield/description?id={id}`
+#### `GET https:/example.com/jira/rest/essentials/1.0/customfield/description?id={id}`
 
 * returns a custom field description for a given field (id as `long` without prefix)
+
+#### `GET https:/example.com/jira/rest/essentials/1.0/customfield/translations`
+
+* returns all available translations for all fields
+
+#### `PUT https:/example.com/jira/rest/essentials/1.0/customfield/translations`
+
+Request body example:
+```json
+[
+    {
+        "id" : "customfield_12345",
+        "name" : {
+            "de_DE" : "Hinweis",
+            "en_UK" : "Hint"
+        },
+        "description" : {
+            "de_DE" : "Zusatzinformation",
+            "en_UK" : "Additional information"
+        }
+    }
+]
+```
 
 ---
 

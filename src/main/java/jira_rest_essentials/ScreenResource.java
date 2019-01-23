@@ -45,7 +45,7 @@ public class ScreenResource {
 	private static final Logger log = LogManager.getLogger("atlassian.plugin");
 
 	@PUT
-	@Produces({ MediaType.APPLICATION_JSON })
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response createOrUpdateScreen(@QueryParam("name") final String name, @QueryParam("description") final String description) {
 
 		if (isBlank(name)) {
@@ -79,7 +79,7 @@ public class ScreenResource {
 	}
 
 	@GET
-	@Produces({ MediaType.APPLICATION_JSON })
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getScreen(
 			@QueryParam("id") final Long id,
 			@QueryParam("name") final String name,
