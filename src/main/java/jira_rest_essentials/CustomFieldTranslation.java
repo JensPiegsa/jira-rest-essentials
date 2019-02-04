@@ -1,15 +1,10 @@
 package jira_rest_essentials;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
 
 
 /**
@@ -22,11 +17,9 @@ public class CustomFieldTranslation implements Serializable {
 	private String id;
 
 	@JsonProperty
-	@JsonDeserialize(keyAs = String.class, contentAs = String.class, as = LinkedHashMap.class)
 	private Map<String, String> name = new LinkedHashMap<>();
 
 	@JsonProperty
-	@JsonDeserialize(keyAs = String.class, contentAs = String.class, as = LinkedHashMap.class)
 	private Map<String, String> description = new LinkedHashMap<>();
 
 	public String getId() {

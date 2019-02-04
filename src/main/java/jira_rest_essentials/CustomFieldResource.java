@@ -1,7 +1,6 @@
 package jira_rest_essentials;
 
 import com.atlassian.jira.web.action.admin.translation.TranslationManager;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,16 +26,12 @@ import org.apache.log4j.Logger;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.CustomFieldManager;
 import com.atlassian.jira.issue.fields.CustomField;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.type.TypeFactory;
 import org.springframework.util.StringUtils;
 
 /**
  * @author Jens Piegsa
  */
 @Path("/customfield")
-//@JsonAutoDetect
 public class CustomFieldResource {
 
 	private static final Logger log = LogManager.getLogger("atlassian.plugin");
@@ -98,30 +93,16 @@ public class CustomFieldResource {
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("translations")
-	public Response putTranslations(final String translationsJson) throws IOException {
-//	public Response putTranslations(final CustomFieldTranslation[] translations) {
-//	public Response putTranslations(final List<CustomFieldTranslation> translations) {
-		System.out.println("json: " + translationsJson);
-		ObjectMapper mapper = new ObjectMapper();
-		List<CustomFieldTranslation> translations = mapper.readValue(translationsJson, TypeFactory.defaultInstance().constructCollectionType(List.class, CustomFieldTranslation.class));
-		System.out.println(translations);
+	public Response putTranslations(final List<CustomFieldTranslation> translations) {
 		for (CustomFieldTranslation translation : translations) {
 			final CustomField customField = customFieldManager().getCustomFieldObject(translation.getId());
 			if (customField != null) {
 				final Map<String, String> nameByLocale = translation.getName();
 				final Map<String, String> descriptionByLocale = translation.getDescription();
-				if (nameByLocale.size() > 1) {
-					log.info("nameByLocale map size larger than 1: " + nameByLocale);
-				}
-				if (descriptionByLocale.size() > 1) {
-					log.info("descriptionByLocale map size larger than 1: " + descriptionByLocale);
-				}
 				final Set<String> localeNames = nameByLocale.keySet();
 				for (String localeName : localeNames) {
 					if (!"default".equals(localeName)) {
-						log.info("LOCALE NAME: " + localeName);
 						final Locale locale = StringUtils.parseLocaleString(localeName);
-						log.info("LOCALE: " + locale);
 						if (locale != null) {
 							final String name = nameByLocale.get(localeName);
 							final String description = descriptionByLocale.get(localeName);
@@ -129,16 +110,18 @@ public class CustomFieldResource {
 							if (name != null) {
 								log.info("Setting translation " + locale + " of "
 										+ customField.getFieldName() + "[" + customField.getId() + "]: "
-										+ name + " " + description);
+										+ name + " " + description + " ...");
 								translationManager().setCustomFieldTranslation(customField, locale, name, description);
 							} else {
-//									System.out.println("Deleting translation " + locale + " of "
-//											+ customField.getFieldName() + "[" + customField.getId() + "]");
 								translationManager().deleteCustomFieldTranslation(customField, locale);
 							}
+						} else {
+							log.warn("Could not parse locale " + localeName + ".");
 						}
 					}
 				}
+			} else {
+				log.warn("Could not find custom field " + translation.getId() + " -> ignoring translation.");
 			}
 		}
 		return Response.status(Response.Status.ACCEPTED).build();
