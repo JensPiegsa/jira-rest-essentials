@@ -39,7 +39,7 @@ import com.atlassian.jira.project.ProjectManager;
  * @author Jens Piegsa
  *
  */
-@Path("/screen")
+@Path("screen")
 public class ScreenResource {
 
 	private static final Logger log = LogManager.getLogger("atlassian.plugin");

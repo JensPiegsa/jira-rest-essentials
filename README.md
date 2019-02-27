@@ -1,5 +1,8 @@
 # JIRA REST Essentials
 
+[![Build Status](https://travis-ci.org/JensPiegsa/jira-rest-essentials.svg?branch=master)](https://travis-ci.org/JensPiegsa/jira-rest-essentials)
+[![codecov](https://codecov.io/gh/JensPiegsa/jira-rest-essentials/branch/master/graph/badge.svg)](https://codecov.io/gh/JensPiegsa/jira-rest-essentials)
+
 This JIRA plugin exists to close some gaps of the [JIRA REST API](https://docs.atlassian.com/jira/REST/ondemand/). 
 
 ### FieldScreen

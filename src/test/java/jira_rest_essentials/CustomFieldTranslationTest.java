@@ -1,18 +1,19 @@
 package jira_rest_essentials;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectReader;
-import org.codehaus.jackson.map.type.ArrayType;
 import org.codehaus.jackson.map.type.TypeFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-public class CustomFieldTranslationTest {
+@DisplayName("CustomFieldTranslation")
+class CustomFieldTranslationTest {
 
-	@Test
-	public void shouldBeDeserializable() throws Exception {
+	@Test @DisplayName("should be deserializable.")
+	void shouldBeDeserializable() throws Exception {
 
 		ObjectMapper mapper = new ObjectMapper();
 		ObjectReader reader = mapper.reader(CustomFieldTranslation.class);
@@ -41,8 +42,8 @@ public class CustomFieldTranslationTest {
 				"]\n", actual.toString());
 	}
 
-	@Test
-	public void shouldBeDeserializableFromList() throws Exception {
+	@Test @DisplayName("should be deserializable from list.")
+	void shouldBeDeserializableFromList() throws Exception {
 
 		ObjectMapper mapper = new ObjectMapper();
 

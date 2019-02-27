@@ -1,5 +1,11 @@
 package jira_rest_essentials;
 
+import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.config.ConstantsManager;
+import com.atlassian.jira.issue.CustomFieldManager;
+import com.atlassian.jira.issue.fields.CustomField;
+import com.atlassian.jira.issue.status.Status;
+import com.atlassian.jira.issue.status.category.StatusCategory;
 import com.atlassian.jira.web.action.admin.translation.TranslationManager;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,7 +15,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
@@ -20,61 +25,46 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-
-import com.atlassian.jira.component.ComponentAccessor;
-import com.atlassian.jira.issue.CustomFieldManager;
-import com.atlassian.jira.issue.fields.CustomField;
 import org.springframework.util.StringUtils;
 
 /**
  * @author Jens Piegsa
  */
-@Path("customfield")
-public class CustomFieldResource {
+@Path("status")
+public class StatusResource {
 
-	private static final Logger log = LogManager.getLogger("atlassian.plugin");
-
-	private static CustomFieldManager customFieldManager() {
-		return ComponentAccessor.getCustomFieldManager();
-	}
+	static final Logger log = LogManager.getLogger("atlassian.plugin");
+	public static final String issueConstantPrefix = "jira.translation.status";
 
 	private static TranslationManager translationManager() {
 		return ComponentAccessor.getTranslationManager();
 	}
 
-	@GET
-	@Produces({MediaType.APPLICATION_JSON})
-	@Path("description")
-	public Response getScreen(@QueryParam("id") final Long id) {
-
-		if (id != null) {
-			log.debug("get custom field description id: " + id);
-			return Response.ok(getCustomFieldById(id)).build();
-		}
-		log.debug("get all custom field descriptions");
-		return Response.ok(getCustomFields()).build();
+	private static ConstantsManager constantsManager() {
+		return ComponentAccessor.getConstantsManager();
 	}
 
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
 	@Path("translations")
 	public Response getTranslations() {
-		final Set<String> installedLocaleNames = getInstalledLocaleNames();
-		final List<CustomField> customFields = customFieldManager().getCustomFieldObjects();
 
-		List<CustomFieldTranslation> translations = new ArrayList<>();
-		for (CustomField customField : customFields) {
+		final Set<String> installedLocaleNames = getInstalledLocaleNames();
+
+		List<StatusTranslation> translations = new ArrayList<>();
+		for (Status status : constantsManager().getStatuses()) {
 			Map<String, String> namesByLocale = new LinkedHashMap<>();
 			Map<String, String> descriptionsByLocale = new LinkedHashMap<>();
-			namesByLocale.put("default", customField.getUntranslatedName());
-			descriptionsByLocale.put("default", customField.getUntranslatedDescription());
+			namesByLocale.put("default", status.getName());
+			descriptionsByLocale.put("default", status.getDescription());
 			for (String localeName : installedLocaleNames) {
-				final Locale locale = StringUtils.parseLocaleString(localeName);
-				final String nameTranslation = translationManager().getCustomFieldNameTranslation(customField, locale);
-				final String descriptionTranslation = translationManager().getCustomFieldDescriptionTranslation(customField, locale);
+//				final Locale locale = StringUtils.parseLocaleString(localeName);
+//				final String nameTranslation = translationManager().getIssueConstantTranslation(status, true, locale);
+				final String nameTranslation = status.getNameTranslation(localeName);
+//				final String descriptionTranslation = translationManager().getIssueConstantTranslation(status, false, locale);
+				final String descriptionTranslation = status.getDescTranslation(localeName);
 				if (nameTranslation != null && !nameTranslation.isEmpty()) {
 					namesByLocale.put(localeName, nameTranslation);
 				}
@@ -82,11 +72,11 @@ public class CustomFieldResource {
 					descriptionsByLocale.put(localeName, descriptionTranslation);
 				}
 			}
-			final CustomFieldTranslation customFieldTranslation = new CustomFieldTranslation();
-			customFieldTranslation.setId(customField.getId());
-			customFieldTranslation.setName(namesByLocale);
-			customFieldTranslation.setDescription(descriptionsByLocale);
-			translations.add(customFieldTranslation);
+			final StatusTranslation statusTranslation = new StatusTranslation();
+			statusTranslation.setId(status.getId());
+			statusTranslation.setName(namesByLocale);
+			statusTranslation.setDescription(descriptionsByLocale);
+			translations.add(statusTranslation);
 		}
 		return Response.ok(translations).build();
 	}
@@ -106,10 +96,10 @@ public class CustomFieldResource {
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("translations")
-	public Response putTranslations(final List<CustomFieldTranslation> translations) {
-		for (CustomFieldTranslation translation : translations) {
-			final CustomField customField = customFieldManager().getCustomFieldObject(translation.getId());
-			if (customField != null) {
+	public Response putTranslations(final List<StatusTranslation> translations) {
+		for (StatusTranslation translation : translations) {
+			final Status status = constantsManager().getStatus(translation.getId());
+			if (status != null) {
 				final Map<String, String> nameByLocale = translation.getName();
 				final Map<String, String> descriptionByLocale = translation.getDescription();
 				final Set<String> localeNames = nameByLocale.keySet();
@@ -122,11 +112,11 @@ public class CustomFieldResource {
 
 							if (name != null) {
 								log.info("Setting translation " + locale + " of "
-										+ customField.getFieldName() + "[" + customField.getId() + "] - "
+										+ status.getName() + "[" + status.getId() + "] - "
 										+ "name: '" + name + "' description:  '" + description + "' ...");
-								translationManager().setCustomFieldTranslation(customField, locale, name, description);
+								translationManager().setIssueConstantTranslation(status, issueConstantPrefix, locale, name, description);
 							} else {
-								translationManager().deleteCustomFieldTranslation(customField, locale);
+								translationManager().deleteIssueConstantTranslation(status, issueConstantPrefix, locale);
 							}
 						} else {
 							log.warn("Could not parse locale " + localeName + ".");
@@ -134,24 +124,9 @@ public class CustomFieldResource {
 					}
 				}
 			} else {
-				log.warn("Could not find custom field " + translation.getId() + " -> ignoring translation.");
+				log.warn("Could not find status " + translation.getId() + " -> ignoring translation.");
 			}
 		}
 		return Response.status(Response.Status.ACCEPTED).build();
-	}
-
-	private Map<String, String> getCustomFields() {
-		final Collection<CustomField> customFields = customFieldManager().getCustomFieldObjects();
-		final Map<String, String> screens = new HashMap<>();
-		for (final CustomField customField : customFields) {
-			screens.put(customField.getId(), customField.getDescription());
-		}
-
-		return screens;
-	}
-
-	private Map<String, String> getCustomFieldById(final long id) {
-		final CustomField customField = customFieldManager().getCustomFieldObject(id);
-		return Collections.singletonMap(customField.getId(), customField.getName());
 	}
 }

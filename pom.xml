@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>jira-rest-essentials</groupId>
 	<artifactId>jira-rest-essentials</artifactId>
-	<version>1.0.42</version>
+	<version>1.0.45</version>
 
 	<organization>
 		<name>Jens Piegsa</name>
@@ -21,6 +21,7 @@
 		<maven.compiler.target>${java.min.version}</maven.compiler.target>
 		<maven.compiler.testSource>${java.min.version}</maven.compiler.testSource>
 		<maven.compiler.testTarget>${java.min.version}</maven.compiler.testTarget>
+
 		<jira.version>7.2.2</jira.version>
 		<amps.version>6.2.11</amps.version>
 		<plugin.testrunner.version>1.2.3</plugin.testrunner.version>
@@ -30,6 +31,12 @@
 		<atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
 		<!-- TestKit version 6.x for JIRA 6.x -->
 		<testkit.version>6.3.11</testkit.version>
+
+		<junit.jupiter.version>5.4.0</junit.jupiter.version>
+		<surefire.version>3.0.0-M3</surefire.version>
+		<resteasy.version>2.3.5.Final</resteasy.version>
+		<mockito.version>2.23.4</mockito.version>
+
 		<downloadSources>true</downloadSources>
 		<downloadJavadocs>true</downloadJavadocs>
 	</properties>
@@ -47,6 +54,10 @@
 				<enabled>true</enabled>
 				<checksumPolicy>warn</checksumPolicy>
 			</releases>
+		</repository>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
 		</repository>
 	</repositories>
 	<pluginRepositories>
@@ -95,10 +106,24 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.10</version>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>3.11.1</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -123,13 +148,13 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- WIRED TEST RUNNER DEPENDENCIES -->
 		<dependency>
 			<groupId>com.atlassian.plugins</groupId>
 			<artifactId>atlassian-plugins-osgi-testrunner</artifactId>
 			<version>${plugin.testrunner.version}</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>jsr311-api</artifactId>
@@ -142,14 +167,86 @@
 			<version>2.2.2-atlassian-1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.github.JensPiegsa</groupId>
+			<artifactId>rest-assured-extension</artifactId>
+			<version>0.1.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>${resteasy.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jdk-http</artifactId>
+			<version>${resteasy.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxb-provider</artifactId>
+			<version>${resteasy.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson-provider</artifactId>
+			<version>${resteasy.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.atlassian.jira</groupId>
+			<artifactId>jira-tests</artifactId>
+			<version>${jira.version}</version>
+			<scope>test</scope>
+			<!--<scope>provided</scope>-->
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Uncomment to use TestKit in your project. Details at https://bitbucket.org/atlassian/jira-testkit -->
 		<!-- You can read more about TestKit at https://developer.atlassian.com/display/JIRADEV/Plugin+Tutorial+-+Smarter+integration+testing+with+TestKit -->
 		<!-- <dependency> <groupId>com.atlassian.jira.tests</groupId> <artifactId>jira-testkit-client</artifactId> 
 			<version>${testkit.version}</version> <scope>test</scope> </dependency> -->
 	</dependencies>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit.jupiter.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>${mockito.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${surefire.version}</version>
+			</plugin>
 			<plugin>
 				<groupId>com.atlassian.maven.plugins</groupId>
 				<artifactId>maven-jira-plugin</artifactId>
