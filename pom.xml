@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>jira-rest-essentials</groupId>
 	<artifactId>jira-rest-essentials</artifactId>
-	<version>1.0.45</version>
+	<version>1.0.46</version>
 
 	<organization>
 		<name>Jens Piegsa</name>
@@ -17,6 +17,7 @@
 
 	<properties>
 		<java.min.version>1.8</java.min.version>
+
 		<maven.compiler.source>${java.min.version}</maven.compiler.source>
 		<maven.compiler.target>${java.min.version}</maven.compiler.target>
 		<maven.compiler.testSource>${java.min.version}</maven.compiler.testSource>
@@ -37,43 +38,157 @@
 		<resteasy.version>2.3.5.Final</resteasy.version>
 		<mockito.version>2.23.4</mockito.version>
 
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
 		<downloadSources>true</downloadSources>
 		<downloadJavadocs>true</downloadJavadocs>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>atlassian-public</id>
-			<url>https://maven.atlassian.com/repository/public</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-		</repository>
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>atlassian-public</id>
-			<url>https://maven.atlassian.com/repository/public</url>
-			<releases>
-				<enabled>true</enabled>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<snapshots>
-				<updatePolicy>never</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${surefire.version}</version>
+				<executions>
+					<execution>
+						<id>default-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<formats>
+						<format>html</format>
+						<format>xml</format>
+					</formats>
+					<check />
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.atlassian.maven.plugins</groupId>
+				<artifactId>maven-jira-plugin</artifactId>
+				<version>${amps.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<productVersion>${jira.version}</productVersion>
+					<productDataVersion>${jira.version}</productDataVersion>
+					<!-- Uncomment to install TestKit backdoor in JIRA. -->
+					<!-- <pluginArtifacts> <pluginArtifact> <groupId>com.atlassian.jira.tests</groupId>
+						<artifactId>jira-testkit-plugin</artifactId> <version>${testkit.version}</version>
+						</pluginArtifact> </pluginArtifacts> -->
+					<enableQuickReload>true</enableQuickReload>
+					<enableFastdev>false</enableFastdev>
+
+					<!-- See here for an explanation of default instructions: -->
+					<!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
+					<instructions>
+						<Atlassian-Plugin-Key>${atlassian.plugin.key}</Atlassian-Plugin-Key>
+
+						<!-- Add package to export here -->
+						<Export-Package>
+							jira_rest_essentials.api,
+						</Export-Package>
+
+						<!-- Add package import here -->
+						<Import-Package>
+							org.springframework.osgi.*;resolution:="optional",
+							org.eclipse.gemini.blueprint.*;resolution:="optional",
+							*
+						</Import-Package>
+
+						<!-- Ensure plugin is spring powered -->
+						<Spring-Context>*</Spring-Context>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.atlassian.plugin</groupId>
+				<artifactId>atlassian-spring-scanner-maven-plugin</artifactId>
+				<version>${atlassian.spring.scanner.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>atlassian-spring-scanner</goal>
+						</goals>
+						<phase>process-classes</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<scannedDependencies>
+						<dependency>
+							<groupId>com.atlassian.plugin</groupId>
+							<artifactId>atlassian-spring-scanner-external-jar</artifactId>
+						</dependency>
+					</scannedDependencies>
+					<verbose>false</verbose>
+				</configuration>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											com.atlassian.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-jira-plugin
+										</artifactId>
+										<versionRange>
+											[6.2.11,)
+										</versionRange>
+										<goals>
+											<goal>
+												compress-resources
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit.jupiter.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>${mockito.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
@@ -108,14 +223,15 @@
 		</dependency>
 
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
 			<version>${junit.jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
@@ -161,6 +277,7 @@
 			<version>1.1.1</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
@@ -206,8 +323,8 @@
 			<groupId>com.atlassian.jira</groupId>
 			<artifactId>jira-tests</artifactId>
 			<version>${jira.version}</version>
-			<scope>test</scope>
-			<!--<scope>provided</scope>-->
+			<!--<scope>test</scope>-->
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -219,144 +336,41 @@
 
 		<!-- Uncomment to use TestKit in your project. Details at https://bitbucket.org/atlassian/jira-testkit -->
 		<!-- You can read more about TestKit at https://developer.atlassian.com/display/JIRADEV/Plugin+Tutorial+-+Smarter+integration+testing+with+TestKit -->
-		<!-- <dependency> <groupId>com.atlassian.jira.tests</groupId> <artifactId>jira-testkit-client</artifactId> 
+		<!-- <dependency> <groupId>com.atlassian.jira.tests</groupId> <artifactId>jira-testkit-client</artifactId>
 			<version>${testkit.version}</version> <scope>test</scope> </dependency> -->
 	</dependencies>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.junit</groupId>
-				<artifactId>junit-bom</artifactId>
-				<version>${junit.jupiter.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-core</artifactId>
-				<version>${mockito.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${surefire.version}</version>
-			</plugin>
-			<plugin>
-				<groupId>com.atlassian.maven.plugins</groupId>
-				<artifactId>maven-jira-plugin</artifactId>
-				<version>${amps.version}</version>
-				<extensions>true</extensions>
-				<configuration>
-					<productVersion>${jira.version}</productVersion>
-					<productDataVersion>${jira.version}</productDataVersion>
-					<!-- Uncomment to install TestKit backdoor in JIRA. -->
-					<!-- <pluginArtifacts> <pluginArtifact> <groupId>com.atlassian.jira.tests</groupId> 
-						<artifactId>jira-testkit-plugin</artifactId> <version>${testkit.version}</version> 
-						</pluginArtifact> </pluginArtifacts> -->
-					<enableQuickReload>true</enableQuickReload>
-					<enableFastdev>false</enableFastdev>
-
-					<!-- See here for an explanation of default instructions: -->
-					<!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
-					<instructions>
-						<Atlassian-Plugin-Key>${atlassian.plugin.key}</Atlassian-Plugin-Key>
-
-						<!-- Add package to export here -->
-						<Export-Package>
-							jira_rest_essentials.api,
-						</Export-Package>
-
-						<!-- Add package import here -->
-						<Import-Package>
-							org.springframework.osgi.*;resolution:="optional",
-							org.eclipse.gemini.blueprint.*;resolution:="optional",
-							*
-						</Import-Package>
-
-						<!-- Ensure plugin is spring powered -->
-						<Spring-Context>*</Spring-Context>
-					</instructions>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>com.atlassian.plugin</groupId>
-				<artifactId>atlassian-spring-scanner-maven-plugin</artifactId>
-				<version>${atlassian.spring.scanner.version}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>atlassian-spring-scanner</goal>
-						</goals>
-						<phase>process-classes</phase>
-					</execution>
-				</executions>
-				<configuration>
-					<scannedDependencies>
-						<dependency>
-							<groupId>com.atlassian.plugin</groupId>
-							<artifactId>atlassian-spring-scanner-external-jar</artifactId>
-						</dependency>
-					</scannedDependencies>
-					<verbose>false</verbose>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.7</version>
-				<configuration>
-					<formats>
-						<format>html</format>
-						<format>xml</format>
-					</formats>
-					<check />
-				</configuration>
-			</plugin>
-		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											com.atlassian.maven.plugins
-										</groupId>
-										<artifactId>
-											maven-jira-plugin
-										</artifactId>
-										<versionRange>
-											[6.2.11,)
-										</versionRange>
-										<goals>
-											<goal>
-												compress-resources
-											</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
+	<repositories>
+		<repository>
+			<id>atlassian-public</id>
+			<url>https://maven.atlassian.com/repository/public</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+		</repository>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>atlassian-public</id>
+			<url>https://maven.atlassian.com/repository/public</url>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 </project>

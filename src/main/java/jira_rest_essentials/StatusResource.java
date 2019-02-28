@@ -1,16 +1,12 @@
 package jira_rest_essentials;
 
+import static java.util.stream.Collectors.joining;
+
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.ConstantsManager;
-import com.atlassian.jira.issue.CustomFieldManager;
-import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.status.Status;
-import com.atlassian.jira.issue.status.category.StatusCategory;
 import com.atlassian.jira.web.action.admin.translation.TranslationManager;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -22,7 +18,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.apache.log4j.LogManager;
@@ -35,8 +30,9 @@ import org.springframework.util.StringUtils;
 @Path("status")
 public class StatusResource {
 
-	static final Logger log = LogManager.getLogger("atlassian.plugin");
-	public static final String issueConstantPrefix = "jira.translation.status";
+	private static final Logger log = LogManager.getLogger("atlassian.plugin");
+
+	private static final String issueConstantPrefix = "jira.translation.status";
 
 	private static TranslationManager translationManager() {
 		return ComponentAccessor.getTranslationManager();
@@ -90,7 +86,7 @@ public class StatusResource {
 	private void debugLocales(final Set<String> localeNames) {
 		log.info(localeNames.stream()
 				.map(n -> "'" + n + "' -> " + StringUtils.parseLocaleString(n))
-				.collect(Collectors.joining("\n\t", "All locales:\n\t", "\n")));
+				.collect(joining("\n\t", "All locales:\n\t", "\n")));
 	}
 
 	@PUT

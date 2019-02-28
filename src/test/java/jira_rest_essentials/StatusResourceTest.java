@@ -28,6 +28,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+/**
+ * @author Jens Piegsa
+ */
 @DisplayName("StatusResource")
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(RestAssuredExtension.class)
@@ -38,7 +41,6 @@ class StatusResourceTest {
 
 	@Mock TranslationManager translationManager;
 	@Mock ConstantsManager constantsManager;
-
 
 	@BeforeEach
 	void setUp() {
@@ -72,7 +74,7 @@ class StatusResourceTest {
 				.willReturn(asList(statusOne, statusTwo));
 	}
 
-	@Test @DisplayName("example")
+	@Test @DisplayName("HTTP GET /status/translations.")
 	void testGet() {
 
 		given()
