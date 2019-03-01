@@ -91,7 +91,7 @@ Request body example:
 
 #### `GET https://example.com/jira/rest/essentials/1.0/workflowscheme?projectKey=EXAMPLE`
 
-* returns all workflow scheme id for given project
+* returns workflow scheme id for given project
 
 ---
 
