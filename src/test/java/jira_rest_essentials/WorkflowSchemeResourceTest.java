@@ -48,10 +48,11 @@ class WorkflowSchemeResourceTest {
 				.addMock(ProjectManager.class, projectManager)
 				.addMock(WorkflowSchemeManager.class, workflowSchemeManager));
 
-		given(projectManager.getProjectByCurrentKey(anyString()))
-				.will(invocation -> new MockProject(1, invocation.getArgument(0)));
+		given(projectManager.getProjectByCurrentKey("NAKO"))
+				.willReturn(new MockProject(1, "NAKO"));
+
 		given(workflowSchemeManager.getWorkflowScheme(any(Project.class)))
-				.will(invocation -> new MockGenericValue("WorkflowScheme", 42L));
+				.willReturn(new MockGenericValue("WorkflowScheme", 42L));
 	}
 
 	@Test @DisplayName("Test HTTP GET with projectKey query parameter.")

@@ -30,10 +30,9 @@ public class WorkflowSchemeResource {
 		final Project project = ComponentAccessor.getProjectManager().getProjectByCurrentKey(projectKey);
 		try {
 			final GenericValue workflowScheme = ComponentAccessor.getWorkflowSchemeManager().getWorkflowScheme(project);
-			log.info("workflowScheme: " + workflowScheme + "[" + workflowScheme.getClass() + "]");
-			final Object workflowSchemeId = workflowScheme.get("id");
-			log.info("workflowSchemeId for project with key " + projectKey + ": " + workflowSchemeId + "[" + workflowSchemeId.getClass() + "]");
-			return Response.ok(new WorkflowReference(workflowSchemeId)).build();
+			log.info("workflowScheme: " + workflowScheme);
+			final Long id = (Long) workflowScheme.get("id");
+			return Response.ok(new WorkflowReference(id)).build();
 		} catch (GenericEntityException e) {
 			log.warn(e.getMessage(), e);
 			return Response.status(NOT_FOUND).entity(e.getMessage()).build();

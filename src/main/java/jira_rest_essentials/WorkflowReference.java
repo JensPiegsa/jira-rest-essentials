@@ -13,7 +13,7 @@ public class WorkflowReference implements Serializable {
 	@JsonProperty
 	private Object id;
 
-	public WorkflowReference(final Object id) {
+	public WorkflowReference(final Long id) {
 		this.id = id;
 	}
 

@@ -56,15 +56,10 @@ public class StatusResource {
 			namesByLocale.put("default", status.getName());
 			descriptionsByLocale.put("default", status.getDescription());
 			for (String localeName : installedLocaleNames) {
-//				final Locale locale = StringUtils.parseLocaleString(localeName);
-//				final String nameTranslation = translationManager().getIssueConstantTranslation(status, true, locale);
-				final String nameTranslation = status.getNameTranslation(localeName);
-//				final String descriptionTranslation = translationManager().getIssueConstantTranslation(status, false, locale);
-				final String descriptionTranslation = status.getDescTranslation(localeName);
-				if (nameTranslation != null && !nameTranslation.isEmpty()) {
+				if (translationManager().hasLocaleTranslation(status, localeName)) {
+					final String nameTranslation = translationManager().getIssueConstantTranslation(status, true, localeName);
+					final String descriptionTranslation = translationManager().getIssueConstantTranslation(status, false, localeName);
 					namesByLocale.put(localeName, nameTranslation);
-				}
-				if (descriptionTranslation != null && !descriptionTranslation.isEmpty()) {
 					descriptionsByLocale.put(localeName, descriptionTranslation);
 				}
 			}
