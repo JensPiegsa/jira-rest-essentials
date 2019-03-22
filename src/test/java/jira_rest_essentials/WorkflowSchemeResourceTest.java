@@ -2,9 +2,9 @@ package jira_rest_essentials;
 
 import static com.github.jenspiegsa.restassuredextension.PostConstructPojoResourceFactory.wired;
 import static io.restassured.RestAssured.given;
+import static javax.ws.rs.core.Response.Status.OK;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.anyString;
 import static org.mockito.BDDMockito.given;
 
 import com.atlassian.jira.component.ComponentAccessor;
@@ -17,7 +17,6 @@ import com.atlassian.jira.workflow.WorkflowSchemeManager;
 import com.github.jenspiegsa.restassuredextension.ConfigureRestAssured;
 import com.github.jenspiegsa.restassuredextension.RestAssuredExtension;
 import io.restassured.http.ContentType;
-import javax.ws.rs.core.Response;
 import org.jboss.resteasy.spi.ResourceFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -64,7 +63,7 @@ class WorkflowSchemeResourceTest {
 			.get("/jira/rest/essentials/1.0/workflowscheme?projectKey=NAKO")
 		.then()
 			.log().all()
-			.statusCode(Response.Status.OK.getStatusCode())
+			.statusCode(OK.getStatusCode())
 			.body("id", equalTo(42));
 	}
 }

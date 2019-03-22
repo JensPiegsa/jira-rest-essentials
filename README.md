@@ -93,6 +93,20 @@ Request body example:
 
 * returns workflow scheme id for given project
 
+### Comments
+
+#### `POST https://example.com/jira/rest/essentials/1.0/comment?issueKey=EXAMPLE-123`
+
+Request body example:
+
+```json
+{
+  "author": "someuser",
+  "body": "secret comment",
+  "projectAdminsOnly": true
+}
+```
+
 ---
 
 ### Build the Add-on ###
