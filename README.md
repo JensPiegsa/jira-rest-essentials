@@ -108,14 +108,15 @@ Request body example:
 }
 ```
 
+### Disabled options
+
+#### `GET https://example.com/jira/rest/essentials/1.0/disabled-options`
+
+* returns all options marked as disabled
+
 ---
 
 ### Build the Add-on ###
 
 * Use Maven to build a deployable jar file: `mvn clean package`
 
-### Disabled options
-
-#### `GET https://example.com/jira/rest/essentials/1.0/disabled-options`
-
-* returns all options marked as disabled
