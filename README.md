@@ -108,6 +108,13 @@ Request body example:
 }
 ```
 
+### Create option
+
+#### `PUT https://example.com/jira/rest/essentials/1.0/option?customfieldId=customfield_12345&value=Yes`
+
+* returns the id of the created option
+* Limit: works only with the first configuration scheme of a custom field.
+
 ### Disabled options
 
 #### `GET https://example.com/jira/rest/essentials/1.0/disabled-options`
