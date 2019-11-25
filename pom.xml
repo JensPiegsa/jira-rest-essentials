@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>jira-rest-essentials</groupId>
 	<artifactId>jira-rest-essentials</artifactId>
-	<version>1.0.50</version>
+	<version>1.0.51</version>
 
 	<organization>
 		<name>Jens Piegsa</name>

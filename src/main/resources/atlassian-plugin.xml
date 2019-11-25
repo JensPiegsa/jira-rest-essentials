@@ -23,6 +23,13 @@
 
 	<!-- https://developer.atlassian.com/docs/atlassian-platform-common-components/rest-api-development/rest-plugin-module -->
 	<rest name="JIRA REST Essentials" i18n-name-key="rest-resource.name" key="rest-resource" path="/essentials" version="1.0">
-		<description key="rest-resource.description">Additional REST Resources exposing features of JIRAs Java API not present in its REST API.</description>
-	</rest>    
+		<description key="rest-resource.description">Additional REST resources exposing features of Jira's Java API not present in its REST API.</description>
+	</rest>
+
+    <customfield-type name="Unversioned Text Field"
+                      i18n-name-key="unversioned-text-field.name"
+                      key="unversionedtextfield"
+                      class="jira_rest_essentials.UnversionedTextCFType">
+        <description>A text field without history</description>
+    </customfield-type>
 </atlassian-plugin>
