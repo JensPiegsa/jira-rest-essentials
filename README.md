@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/JensPiegsa/jira-rest-essentials.svg?branch=master)](https://travis-ci.org/JensPiegsa/jira-rest-essentials)
 [![codecov](https://codecov.io/gh/JensPiegsa/jira-rest-essentials/branch/master/graph/badge.svg)](https://codecov.io/gh/JensPiegsa/jira-rest-essentials)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3WB8AXMP4VY98)
 
 This JIRA plugin exists to close some gaps of the [JIRA REST API](https://docs.atlassian.com/jira/REST/ondemand/). 
 
@@ -107,8 +108,22 @@ Request body example:
 }
 ```
 
+### Create option
+
+#### `PUT https://example.com/jira/rest/essentials/1.0/option?customfieldId=customfield_12345&value=Yes`
+
+* returns the id of the created option
+* Limit: works only with the first configuration scheme of a custom field.
+
+### Disabled options
+
+#### `GET https://example.com/jira/rest/essentials/1.0/disabled-options`
+
+* returns all options marked as disabled
+
 ---
 
 ### Build the Add-on ###
 
 * Use Maven to build a deployable jar file: `mvn clean package`
+
