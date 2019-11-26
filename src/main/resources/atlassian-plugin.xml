@@ -31,5 +31,8 @@
                       key="unversionedtextfield"
                       class="jira_rest_essentials.UnversionedTextCFType">
         <description>A text field without history</description>
+        <resource name="view" type="velocity" location="templates/plugins/fields/view/view-basictext.vm"/>
+        <resource name="edit" type="velocity" location="/templates/edit.vm"/>
+        <resource name="xml" type="velocity" location="templates/plugins/fields/xml/xml-basictext.vm"/>
     </customfield-type>
 </atlassian-plugin>

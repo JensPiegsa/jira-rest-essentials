@@ -12,7 +12,6 @@ import com.atlassian.plugin.spring.scanner.annotation.imports.JiraImport;
 /**
  * see: https://community.atlassian.com/t5/Jira-questions/How-to-avoid-to-track-changes-in-history-for-a-custom-field/qaq-p/448406
  * see: https://developer.atlassian.com/server/jira/platform/creating-a-custom-field-type/
- * see: https://community.atlassian.com/t5/Answers-Developer-Questions/How-do-I-change-the-Type-of-a-Custom-field/qaq-p/507030
  */
 @Scanned
 public class UnversionedTextCFType extends RenderableTextCFType {
