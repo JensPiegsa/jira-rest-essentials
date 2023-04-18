@@ -35,7 +35,7 @@
 
 		<junit.jupiter.version>5.4.0</junit.jupiter.version>
 		<surefire.version>3.0.0-M3</surefire.version>
-		<resteasy.version>2.3.5.Final</resteasy.version>
+		<resteasy.version>3.0.20.Final</resteasy.version>
 		<mockito.version>2.23.4</mockito.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
